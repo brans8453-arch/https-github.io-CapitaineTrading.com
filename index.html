@@ -2,264 +2,200 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Capitaine Trading | Exchange</title>
+<title>Capitaine Trading | Exchange Démo</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box}
-body{
- margin:0;
- font-family:Inter,Arial,sans-serif;
- background:#0b0e11;
- color:#eaecef;
-}
-a{text-decoration:none;color:#f0b90b}
-
-header{
- position:fixed;
- top:0;
- width:100%;
- background:#0b0e11;
- border-bottom:1px solid #1e2329;
- z-index:100;
-}
-.header-inner{
- display:flex;
- justify-content:space-between;
- align-items:center;
- padding:12px 16px;
-}
-.logo{font-weight:700;font-size:18px;color:#f0b90b}
-.header-btns button{
- background:#f0b90b;
- border:none;
- padding:8px 12px;
- border-radius:6px;
- font-weight:600;
- margin-left:6px;
-}
-
+body{margin:0;font-family:Inter,Arial;background:#0b0e11;color:#eaecef}
+a{color:#f0b90b;text-decoration:none}
+header{position:fixed;top:0;width:100%;background:#0b0e11;border-bottom:1px solid #1e2329;z-index:100}
+.hi{display:flex;justify-content:space-between;align-items:center;padding:12px 16px}
+.logo{font-weight:700;color:#f0b90b}
+.hb button{margin-left:6px;background:#f0b90b;border:none;padding:8px 12px;border-radius:6px;font-weight:600}
 section{padding:90px 16px}
-.hero{
- text-align:center;
-}
-.hero h1{font-size:28px;margin-bottom:10px}
-.hero p{color:#b7bdc6}
-
-.features{
- display:grid;
- grid-template-columns:1fr;
- gap:16px;
- margin-top:30px;
-}
-.card{
- background:#161a1e;
- padding:18px;
- border-radius:12px;
- border:1px solid #1e2329;
-}
-
-#app{display:none}
-
-.nav-app{
- display:flex;
- justify-content:space-around;
- position:fixed;
- bottom:0;
- width:100%;
- background:#0b0e11;
- border-top:1px solid #1e2329;
-}
-.nav-app button{
- flex:1;
- padding:12px;
- background:none;
- border:none;
- color:#eaecef;
- font-weight:600;
-}
-
-input{
- width:100%;
- padding:12px;
- margin:8px 0;
- border-radius:8px;
- border:none;
- background:#0b0e11;
- color:#fff;
- border:1px solid #1e2329;
-}
-
-.btn{
- width:100%;
- padding:12px;
- background:#f0b90b;
- border:none;
- border-radius:8px;
- font-weight:700;
- color:#000;
-}
-
-.notice{
- margin-top:8px;
- font-size:14px;
- color:#f0b90b;
-}
-
-.scroll{max-height:180px;overflow-y:auto}
-
-footer{
- text-align:center;
- font-size:12px;
- color:#848e9c;
- padding:20px;
-}
+.card{background:#161a1e;border:1px solid #1e2329;border-radius:12px;padding:16px;margin-bottom:12px}
+.btn{width:100%;padding:12px;background:#f0b90b;border:none;border-radius:8px;font-weight:700;color:#000}
+input{width:100%;padding:12px;margin:6px 0;border-radius:8px;border:1px solid #1e2329;background:#0b0e11;color:#fff}
+.notice{color:#f0b90b;font-size:14px;margin-top:6px}
+.small{color:#848e9c;font-size:12px}
+#app,#auth{display:none}
+.nav{position:fixed;bottom:0;width:100%;display:none;background:#0b0e11;border-top:1px solid #1e2329}
+.nav button{flex:1;background:none;border:none;color:#eaecef;padding:12px;font-weight:600}
+.grid{display:grid;grid-template-columns:1fr;gap:12px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{border-bottom:1px solid #1e2329;padding:8px;text-align:left}
+.badge{display:inline-block;padding:4px 8px;border-radius:999px;background:#1e2329}
+footer{text-align:center;color:#848e9c;font-size:12px;padding:20px}
 </style>
 </head>
 
 <body>
-
 <header>
-<div class="header-inner">
-<div class="logo">Capitaine Trading</div>
-<div class="header-btns">
-<button onclick="showAuth()">Connexion</button>
-<button onclick="showAuth()">Inscription</button>
-</div>
-</div>
+  <div class="hi">
+    <div class="logo">Capitaine Trading</div>
+    <div class="hb" id="hb">
+      <button onclick="showAuth()">Connexion</button>
+      <button onclick="showAuth()">Inscription</button>
+    </div>
+  </div>
 </header>
 
-<!-- LANDING PAGE -->
+<!-- LANDING -->
 <section id="landing">
-<div class="hero">
-<h1>Tradez comme un professionnel</h1>
-<p>Plateforme de trading nouvelle génération – rapide, sécurisée, mobile-first</p>
-</div>
-
-<div class="features">
-<div class="card">⚡ Exécution rapide des trades</div>
-<div class="card">🔐 Sécurité & transparence</div>
-<div class="card">📈 Signaux intelligents</div>
-<div class="card">🤝 Programme de parrainage</div>
-</div>
+  <div class="card">
+    <h2>Tradez avec discipline</h2>
+    <p class="small">Signaux programmés • Historique • Démo réaliste</p>
+  </div>
+  <div class="grid">
+    <div class="card">⚡ Signaux toutes les 4 heures</div>
+    <div class="card">🔐 Règles & procédures claires</div>
+    <div class="card">📈 Graphiques TradingView</div>
+    <div class="card">🧾 Historique complet</div>
+  </div>
 </section>
 
 <!-- AUTH -->
-<section id="auth" style="display:none">
-<div class="card">
-<h3>Connexion</h3>
-<input id="user" placeholder="Utilisateur">
-<input id="pass" type="password" placeholder="Mot de passe">
-<button class="btn" onclick="login()">Se connecter</button>
-
-<hr style="border-color:#1e2329;margin:16px 0">
-
-<h3>Créer un compte</h3>
-<input id="newUser" placeholder="Utilisateur">
-<input id="newPass" type="password" placeholder="Mot de passe">
-<input id="refCode" placeholder="Code parrain (optionnel)">
-<button class="btn" onclick="createAccount()">Créer</button>
-<div id="signupMsg" class="notice"></div>
-</div>
+<section id="auth">
+  <div class="card">
+    <h3>Connexion</h3>
+    <input id="loginId" placeholder="Email (utilisateur) ou admin">
+    <input id="loginPass" type="password" placeholder="Mot de passe">
+    <button class="btn" onclick="login()">Se connecter</button>
+    <hr style="border-color:#1e2329;margin:14px 0">
+    <h3>Créer un compte</h3>
+    <input id="regEmail" placeholder="Email obligatoire">
+    <input id="regPass" type="password" placeholder="Mot de passe">
+    <input id="regRef" placeholder="Code parrain (optionnel)">
+    <button class="btn" onclick="register()">Créer</button>
+    <div id="authMsg" class="notice"></div>
+  </div>
 </section>
 
 <!-- APP -->
 <section id="app">
-<div class="card">
-<h3>Solde</h3>
-<h2 id="balance">0.00 USDT</h2>
-</div>
+  <div class="grid">
+    <div class="card">
+      <h3>Solde</h3>
+      <h2 id="bal">0.00 USDT</h2>
+      <div class="small">Prochain signal : <span id="nextSig">—</span></div>
+    </div>
 
-<div class="card">
-<h3>Graphique</h3>
-<canvas id="chart"></canvas>
-</div>
+    <div class="card">
+      <h3>Marché</h3>
+      <!-- TradingView Widget -->
+      <div style="height:320px">
+        <iframe src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_1&symbol=BINANCE:BTCUSDT&interval=60&hidesidetoolbar=1&symboledit=1&saveimage=0&toolbarbg=0b0e11&studies=[]&theme=dark&style=1&locale=fr"
+          style="width:100%;height:100%;border:0"></iframe>
+      </div>
+    </div>
 
-<div class="card">
-<h3>Trading</h3>
-<button class="btn" onclick="trade()">Trader maintenant</button>
-<div id="tradeMsg" class="notice"></div>
-</div>
+    <div class="card">
+      <h3>Trading (discipline)</h3>
+      <div class="badge" id="sigState">Signal fermé</div>
+      <button class="btn" onclick="trade()">Trader maintenant</button>
+      <div id="tradeMsg" class="notice"></div>
+    </div>
 
-<div class="card">
-<h3>Parrainage</h3>
-<p>Votre code : <b id="myCode"></b></p>
-</div>
+    <div class="card">
+      <h3>Historique des trades</h3>
+      <table>
+        <thead><tr><th>Date</th><th>Signal</th><th>Résultat</th></tr></thead>
+        <tbody id="hist"></tbody>
+      </table>
+    </div>
 
-<div class="card">
-<h3>Notifications</h3>
-<div id="notifs" class="scroll"></div>
-</div>
+    <div class="card" id="adminPanel" style="display:none">
+      <h3>Admin</h3>
+      <button class="btn" onclick="toggleSignal()">Ouvrir/Fermer signal</button>
+      <div class="small">Créditer/Débiter (démo)</div>
+      <input id="amt" placeholder="Montant (+/-)">
+      <button class="btn" onclick="adjust()">Appliquer</button>
+      <div class="notice" id="adminMsg"></div>
+    </div>
+  </div>
 </section>
 
-<nav class="nav-app" id="navApp" style="display:none">
-<button onclick="scrollToTop()">Dashboard</button>
-<button onclick="logout()">Déconnexion</button>
+<nav class="nav" id="nav">
+  <button onclick="scrollTo({top:0,behavior:'smooth'})">Dashboard</button>
+  <button onclick="logout()">Déconnexion</button>
 </nav>
 
-<footer>
-© 2026 Capitaine Trading — Démonstration
-</footer>
+<footer>© 2026 Capitaine Trading — Démonstration</footer>
 
 <script>
-let users={admin:{pass:"admin243",balance:100,code:"ADMIN123"}}
-let current=null
-let used=false
-
-function showAuth(){
- document.getElementById("landing").style.display="none"
- document.getElementById("auth").style.display="block"
+const FOUR_H=4*60*60*1000;
+let state=JSON.parse(localStorage.getItem('ct_state')||'{}');
+if(!state.users){
+  state={
+    users:{ admin:{pass:"admin243",bal:0,role:"admin",hist:[]} },
+    signalOpen:false,
+    nextSignal: Date.now()+FOUR_H
+  };
+  save();
 }
+let me=null;
 
+function save(){localStorage.setItem('ct_state',JSON.stringify(state));}
+function showAuth(){hideAll();auth.style.display='block'}
+function hideAll(){landing.style.display='none';auth.style.display='none';app.style.display='none';nav.style.display='none';}
 function login(){
- let u=user.value,p=pass.value
- if(users[u] && users[u].pass===p){
-  current=u
-  document.getElementById("auth").style.display="none"
-  document.getElementById("app").style.display="block"
-  document.getElementById("navApp").style.display="flex"
-  update()
-  draw()
- }
+  const id=loginId.value.trim();
+  const p=loginPass.value;
+  if(state.users[id] && state.users[id].pass===p){
+    me=id;enter();
+  } else alert("Identifiants incorrects");
 }
-
-function createAccount(){
- let u=newUser.value,p=newPass.value
- if(users[u]){signupMsg.innerText="Utilisateur existe";return}
- let code=u.toUpperCase()+Math.floor(Math.random()*1000)
- users[u]={pass:p,balance:50,code:code}
- signupMsg.innerText="Compte créé. Code : "+code
+function register(){
+  const e=regEmail.value.trim();
+  if(!e.includes('@')){authMsg.textContent="Email obligatoire";return;}
+  if(state.users[e]){authMsg.textContent="Compte existe";return;}
+  state.users[e]={pass:regPass.value,bal:0,role:"user",hist:[]};
+  authMsg.textContent="Compte créé. Connectez-vous.";
+  save();
 }
-
-function update(){
- balance.innerText=users[current].balance.toFixed(2)+" USDT"
- myCode.innerText=users[current].code
+function enter(){
+  hideAll(); app.style.display='block'; nav.style.display='flex';
+  hb.innerHTML="";
+  if(state.users[me].role==="admin") adminPanel.style.display='block';
+  tick(); renderHist();
 }
+function tick(){
+  const now=Date.now();
+  if(now>=state.nextSignal){
+    state.signalOpen=true;
+    state.nextSignal=now+FOUR_H;
+    save();
+  }
+  sigState.textContent=state.signalOpen?"Signal ouvert":"Signal fermé";
+  nextSig.textContent=new Date(state.nextSignal).toLocaleString();
+  bal.textContent=state.users[me].bal.toFixed(2)+" USDT";
+}
+setInterval(tick,1000);
 
 function trade(){
- if(used){tradeMsg.innerText="Signal déjà utilisé";return}
- used=true
- let gain=(Math.random()*10-5)
- users[current].balance+=gain
- update()
- tradeMsg.innerText="Résultat : "+gain.toFixed(2)+" USDT"
+  if(!state.signalOpen){tradeMsg.textContent="Signal non disponible. Attendez l'heure.";return;}
+  state.signalOpen=false;
+  const res=(Math.random()*4-2);
+  state.users[me].bal+=res;
+  state.users[me].hist.unshift({d:new Date().toLocaleString(),s:"4H",r:res.toFixed(2)});
+  save(); renderHist();
+  tradeMsg.textContent="Trade exécuté: "+res.toFixed(2)+" USDT";
 }
-
-function draw(){
- new Chart(chart,{
- type:"line",
- data:{labels:[1,2,3,4,5],
- datasets:[{data:[10,12,9,14,11],borderColor:"#f0b90b"}]},
- options:{plugins:{legend:{display:false}}}
- })
+function renderHist(){
+  hist.innerHTML="";
+  (state.users[me].hist||[]).forEach(h=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${h.d}</td><td>${h.s}</td><td>${h.r}</td>`;
+    hist.appendChild(tr);
+  });
 }
-
-function logout(){location.reload()}
-function scrollToTop(){window.scrollTo({top:0,behavior:"smooth"})}
+function toggleSignal(){state.signalOpen=!state.signalOpen;save();adminMsg.textContent="Signal mis à jour";}
+function adjust(){
+  const v=parseFloat(amt.value||0);
+  state.users[me].bal+=v; save(); adminMsg.textContent="Solde ajusté";
+}
+function logout(){location.reload();}
 </script>
-
 </body>
 </html>
