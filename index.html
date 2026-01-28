@@ -21,7 +21,20 @@ input{width:100%;padding:12px;margin:6px 0;border-radius:8px;border:1px solid #1
 .small{color:#848e9c;font-size:12px}
 #app,#auth{display:none}
 .nav{position:fixed;bottom:0;width:100%;display:none;background:#0b0e11;border-top:1px solid #1e2329}
-.nav button{flex:1;background:none;border:none;color:#eaecef;padding:12px;font-weight:600}
+.nav button{
+  background:#ff9800;
+  border:none;
+  padding:10px 14px;
+  border-radius:8px;
+  font-weight:bold;
+}
+
+nav button.secondary{
+  background:transparent;
+  color:#ff9800;
+  font-size:12px;
+  font-weight:normal;
+}
 .grid{display:grid;grid-template-columns:1fr;gap:12px}
 table{width:100%;border-collapse:collapse;font-size:13px}
 th,td{border-bottom:1px solid #1e2329;padding:8px;text-align:left}
@@ -197,5 +210,33 @@ function adjust(){
 }
 function logout(){location.reload();}
 </script>
-</body>
+</body><section style="padding:20px;">
+  <div style="background:#142e26;padding:20px;border-radius:12px;">
+    <h3 style="text-align:center;">Marché – Simulation</h3>
+    <canvas id="chart" height="300"></canvas>
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const ctx = document.getElementById('chart');
+if(ctx){
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ['09h','10h','11h','12h','13h','14h','15h'],
+      datasets: [{
+        data: [100,105,98,110,108,115,112],
+        borderColor: '#ff9800',
+        tension: 0.4,
+        fill: false
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins:{legend:{display:false}}
+    }
+  });
+}
+</script>
 </html>
