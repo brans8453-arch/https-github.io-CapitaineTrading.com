@@ -2,86 +2,120 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Capitaine Trading</title>
+<title>Capitaine Trading | Exchange</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
+*{box-sizing:border-box}
 body{
-  margin:0;
-  font-family:Arial, sans-serif;
-  background:#0f1f1a;
-  color:#fff;
+ margin:0;
+ font-family:Inter,Arial,sans-serif;
+ background:#0b0e11;
+ color:#eaecef;
 }
+a{text-decoration:none;color:#f0b90b}
+
 header{
-  background:#0b3d2e;
-  padding:15px;
-  text-align:center;
+ position:fixed;
+ top:0;
+ width:100%;
+ background:#0b0e11;
+ border-bottom:1px solid #1e2329;
+ z-index:100;
 }
-nav{
-  display:flex;
-  justify-content:space-around;
-  background:#146356;
-  padding:10px;
-  position:sticky;
-  top:0;
+.header-inner{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ padding:12px 16px;
 }
-nav button{
-  background:#ff9800;
-  border:none;
-  padding:8px;
-  border-radius:6px;
-  font-weight:bold;
+.logo{font-weight:700;font-size:18px;color:#f0b90b}
+.header-btns button{
+ background:#f0b90b;
+ border:none;
+ padding:8px 12px;
+ border-radius:6px;
+ font-weight:600;
+ margin-left:6px;
 }
-section{
-  display:none;
-  padding:15px;
+
+section{padding:90px 16px}
+.hero{
+ text-align:center;
 }
-section.active{display:block}
+.hero h1{font-size:28px;margin-bottom:10px}
+.hero p{color:#b7bdc6}
+
+.features{
+ display:grid;
+ grid-template-columns:1fr;
+ gap:16px;
+ margin-top:30px;
+}
 .card{
-  background:#142e26;
-  padding:15px;
-  border-radius:10px;
-  margin-bottom:10px;
+ background:#161a1e;
+ padding:18px;
+ border-radius:12px;
+ border:1px solid #1e2329;
 }
+
+#app{display:none}
+
+.nav-app{
+ display:flex;
+ justify-content:space-around;
+ position:fixed;
+ bottom:0;
+ width:100%;
+ background:#0b0e11;
+ border-top:1px solid #1e2329;
+}
+.nav-app button{
+ flex:1;
+ padding:12px;
+ background:none;
+ border:none;
+ color:#eaecef;
+ font-weight:600;
+}
+
 input{
-  width:100%;
-  padding:10px;
-  margin:6px 0;
-  border-radius:6px;
-  border:none;
+ width:100%;
+ padding:12px;
+ margin:8px 0;
+ border-radius:8px;
+ border:none;
+ background:#0b0e11;
+ color:#fff;
+ border:1px solid #1e2329;
 }
+
 .btn{
-  width:100%;
-  padding:10px;
-  background:#ff9800;
-  border:none;
-  border-radius:8px;
-  font-weight:bold;
+ width:100%;
+ padding:12px;
+ background:#f0b90b;
+ border:none;
+ border-radius:8px;
+ font-weight:700;
+ color:#000;
 }
+
 .notice{
-  background:#1f4036;
-  padding:8px;
-  border-radius:6px;
-  margin-top:8px;
+ margin-top:8px;
+ font-size:14px;
+ color:#f0b90b;
 }
-.scroll{
-  max-height:200px;
-  overflow-y:auto;
-}
-.notification{
-  background:#ff9800;
-  color:#000;
-  padding:6px;
-  border-radius:5px;
-  margin-bottom:5px;
-}
+
+.scroll{max-height:180px;overflow-y:auto}
+
 footer{
-  text-align:center;
-  font-size:12px;
-  color:#aaa;
-  padding:10px;
+ text-align:center;
+ font-size:12px;
+ color:#848e9c;
+ padding:20px;
 }
 </style>
 </head>
@@ -89,33 +123,42 @@ footer{
 <body>
 
 <header>
-<h2>Capitaine Trading</h2>
-<p>Plateforme de trading – Démonstration</p>
+<div class="header-inner">
+<div class="logo">Capitaine Trading</div>
+<div class="header-btns">
+<button onclick="showAuth()">Connexion</button>
+<button onclick="showAuth()">Inscription</button>
+</div>
+</div>
 </header>
 
-<nav>
-<button onclick="show('login')">Connexion</button>
-<button onclick="show('dashboard')">Dashboard</button>
-<button onclick="show('trade')">Trader</button>
-<button onclick="show('account')">Compte</button>
-</nav>
+<!-- LANDING PAGE -->
+<section id="landing">
+<div class="hero">
+<h1>Tradez comme un professionnel</h1>
+<p>Plateforme de trading nouvelle génération – rapide, sécurisée, mobile-first</p>
+</div>
 
-<section id="login" class="active">
+<div class="features">
+<div class="card">⚡ Exécution rapide des trades</div>
+<div class="card">🔐 Sécurité & transparence</div>
+<div class="card">📈 Signaux intelligents</div>
+<div class="card">🤝 Programme de parrainage</div>
+</div>
+</section>
+
+<!-- AUTH -->
+<section id="auth" style="display:none">
 <div class="card">
 <h3>Connexion</h3>
 <input id="user" placeholder="Utilisateur">
 <input id="pass" type="password" placeholder="Mot de passe">
 <button class="btn" onclick="login()">Se connecter</button>
-<p style="text-align:center;margin-top:10px">
-<a href="#" onclick="show('signup')" style="color:#ff9800">Créer un compte</a>
-</p>
-</div>
-</section>
 
-<section id="signup">
-<div class="card">
+<hr style="border-color:#1e2329;margin:16px 0">
+
 <h3>Créer un compte</h3>
-<input id="newUser" placeholder="Nom utilisateur">
+<input id="newUser" placeholder="Utilisateur">
 <input id="newPass" type="password" placeholder="Mot de passe">
 <input id="refCode" placeholder="Code parrain (optionnel)">
 <button class="btn" onclick="createAccount()">Créer</button>
@@ -123,121 +166,99 @@ footer{
 </div>
 </section>
 
-<section id="dashboard">
+<!-- APP -->
+<section id="app">
 <div class="card">
 <h3>Solde</h3>
 <h2 id="balance">0.00 USDT</h2>
 </div>
 
 <div class="card">
-<h3>Notifications</h3>
-<div id="notifs" class="scroll"></div>
-</div>
-
-<div class="card">
+<h3>Graphique</h3>
 <canvas id="chart"></canvas>
 </div>
-</section>
 
-<section id="trade">
 <div class="card">
-<h3>Signal</h3>
-<p id="signal">En attente…</p>
+<h3>Trading</h3>
 <button class="btn" onclick="trade()">Trader maintenant</button>
 <div id="tradeMsg" class="notice"></div>
 </div>
-</section>
 
-<section id="account">
 <div class="card">
-<h3>Mon compte</h3>
-<p>Utilisateur : <span id="accUser"></span></p>
-<p>Code parrain : <span id="myCode"></span></p>
-<input id="newPassAcc" type="password" placeholder="Nouveau mot de passe">
-<button class="btn" onclick="changePass()">Modifier mot de passe</button>
-<div id="accMsg" class="notice"></div>
+<h3>Parrainage</h3>
+<p>Votre code : <b id="myCode"></b></p>
+</div>
+
+<div class="card">
+<h3>Notifications</h3>
+<div id="notifs" class="scroll"></div>
 </div>
 </section>
 
+<nav class="nav-app" id="navApp" style="display:none">
+<button onclick="scrollToTop()">Dashboard</button>
+<button onclick="logout()">Déconnexion</button>
+</nav>
+
 <footer>
-support@capitainetrading.com | urgence@capitainetrading.com
+© 2026 Capitaine Trading — Démonstration
 </footer>
 
 <script>
-let users={
- admin:{pass:"admin243",balance:100,code:"ADMIN123",refs:[]}
-};
-let current=null;
-let used=false;
+let users={admin:{pass:"admin243",balance:100,code:"ADMIN123"}}
+let current=null
+let used=false
 
-function show(id){
- document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));
- document.getElementById(id).classList.add("active");
+function showAuth(){
+ document.getElementById("landing").style.display="none"
+ document.getElementById("auth").style.display="block"
 }
 
 function login(){
- let u=user.value,p=pass.value;
+ let u=user.value,p=pass.value
  if(users[u] && users[u].pass===p){
-  current=u;
-  update();
-  show("dashboard");
-  draw();
- }else alert("Erreur");
-}
-
-function createAccount(){
- let u=newUser.value,p=newPass.value,r=refCode.value;
- if(users[u]){signupMsg.innerText="Existe déjà";return;}
- let code=u.toUpperCase()+Math.floor(Math.random()*1000);
- users[u]={pass:p,balance:50,code:code,refs:[]};
- signupMsg.innerText="Compte créé. Code parrain : "+code;
- if(r){
-  for(let k in users){
-   if(users[k].code===r){
-    users[k].balance+=8;
-    users[k].refs.push(u);
-    notify("Parrainage +8 USDT pour "+k);
-   }
-  }
+  current=u
+  document.getElementById("auth").style.display="none"
+  document.getElementById("app").style.display="block"
+  document.getElementById("navApp").style.display="flex"
+  update()
+  draw()
  }
 }
 
-function update(){
- balance.innerText=users[current].balance.toFixed(2)+" USDT";
- accUser.innerText=current;
- myCode.innerText=users[current].code;
+function createAccount(){
+ let u=newUser.value,p=newPass.value
+ if(users[u]){signupMsg.innerText="Utilisateur existe";return}
+ let code=u.toUpperCase()+Math.floor(Math.random()*1000)
+ users[u]={pass:p,balance:50,code:code}
+ signupMsg.innerText="Compte créé. Code : "+code
 }
 
-function notify(t){
- let d=document.createElement("div");
- d.className="notification";
- d.innerText=t;
- notifs.prepend(d);
+function update(){
+ balance.innerText=users[current].balance.toFixed(2)+" USDT"
+ myCode.innerText=users[current].code
 }
 
 function trade(){
- if(used){tradeMsg.innerText="Signal déjà utilisé";return;}
- used=true;
- let gain=(Math.random()*10-5);
- users[current].balance+=gain;
- update();
- tradeMsg.innerText="Résultat : "+gain.toFixed(2)+" USDT";
- notify("Trade exécuté");
-}
-
-function changePass(){
- users[current].pass=newPassAcc.value;
- accMsg.innerText="Mot de passe modifié";
- notify("Mot de passe changé");
+ if(used){tradeMsg.innerText="Signal déjà utilisé";return}
+ used=true
+ let gain=(Math.random()*10-5)
+ users[current].balance+=gain
+ update()
+ tradeMsg.innerText="Résultat : "+gain.toFixed(2)+" USDT"
 }
 
 function draw(){
- new Chart(chart,{type:"line",
+ new Chart(chart,{
+ type:"line",
  data:{labels:[1,2,3,4,5],
- datasets:[{data:[10,12,9,14,11],borderColor:"#ff9800"}]},
- options:{responsive:true,plugins:{legend:{display:false}}}
-});
+ datasets:[{data:[10,12,9,14,11],borderColor:"#f0b90b"}]},
+ options:{plugins:{legend:{display:false}}}
+ })
 }
+
+function logout(){location.reload()}
+function scrollToTop(){window.scrollTo({top:0,behavior:"smooth"})}
 </script>
 
 </body>
