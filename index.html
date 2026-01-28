@@ -2,21 +2,87 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Capitaine Trading – Simulateur</title>
+<title>Capitaine Trading</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-body{margin:0;font-family:Arial;background:#0f1f1a;color:#fff}
-header{background:#0b3d2e;padding:15px;text-align:center}
-nav{display:flex;justify-content:space-around;background:#146356;padding:10px}
-nav button{background:#ff9800;border:none;padding:8px 12px;color:#000;font-weight:bold;border-radius:6px}
-section{padding:15px;display:none}
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:#0f1f1a;
+  color:#fff;
+}
+header{
+  background:#0b3d2e;
+  padding:15px;
+  text-align:center;
+}
+nav{
+  display:flex;
+  justify-content:space-around;
+  background:#146356;
+  padding:10px;
+  position:sticky;
+  top:0;
+}
+nav button{
+  background:#ff9800;
+  border:none;
+  padding:8px;
+  border-radius:6px;
+  font-weight:bold;
+}
+section{
+  display:none;
+  padding:15px;
+}
 section.active{display:block}
-.card{background:#142e26;padding:15px;border-radius:10px;margin-bottom:10px}
-.btn{background:#ff9800;border:none;padding:10px;width:100%;border-radius:8px;font-weight:bold}
-.notice{background:#1f4036;padding:10px;border-radius:6px;margin-top:8px}
-footer{font-size:12px;text-align:center;padding:10px;color:#aaa}
+.card{
+  background:#142e26;
+  padding:15px;
+  border-radius:10px;
+  margin-bottom:10px;
+}
+input{
+  width:100%;
+  padding:10px;
+  margin:6px 0;
+  border-radius:6px;
+  border:none;
+}
+.btn{
+  width:100%;
+  padding:10px;
+  background:#ff9800;
+  border:none;
+  border-radius:8px;
+  font-weight:bold;
+}
+.notice{
+  background:#1f4036;
+  padding:8px;
+  border-radius:6px;
+  margin-top:8px;
+}
+.scroll{
+  max-height:200px;
+  overflow-y:auto;
+}
+.notification{
+  background:#ff9800;
+  color:#000;
+  padding:6px;
+  border-radius:5px;
+  margin-bottom:5px;
+}
+footer{
+  text-align:center;
+  font-size:12px;
+  color:#aaa;
+  padding:10px;
+}
 </style>
 </head>
 
@@ -24,29 +90,48 @@ footer{font-size:12px;text-align:center;padding:10px;color:#aaa}
 
 <header>
 <h2>Capitaine Trading</h2>
-<p>Plateforme professionnelle de démonstration</p>
+<p>Plateforme de trading – Démonstration</p>
 </header>
 
 <nav>
+<button onclick="show('login')">Connexion</button>
 <button onclick="show('dashboard')">Dashboard</button>
 <button onclick="show('trade')">Trader</button>
-<button onclick="show('history')">Historique</button>
-<button onclick="logout()">Déconnexion</button>
+<button onclick="show('account')">Compte</button>
 </nav>
 
 <section id="login" class="active">
 <div class="card">
 <h3>Connexion</h3>
-<input id="user" placeholder="Identifiant"><br><br>
-<input id="pass" type="password" placeholder="Mot de passe"><br><br>
-<button class="btn" onclick="login()">Connexion</button>
+<input id="user" placeholder="Utilisateur">
+<input id="pass" type="password" placeholder="Mot de passe">
+<button class="btn" onclick="login()">Se connecter</button>
+<p style="text-align:center;margin-top:10px">
+<a href="#" onclick="show('signup')" style="color:#ff9800">Créer un compte</a>
+</p>
+</div>
+</section>
+
+<section id="signup">
+<div class="card">
+<h3>Créer un compte</h3>
+<input id="newUser" placeholder="Nom utilisateur">
+<input id="newPass" type="password" placeholder="Mot de passe">
+<input id="refCode" placeholder="Code parrain (optionnel)">
+<button class="btn" onclick="createAccount()">Créer</button>
+<div id="signupMsg" class="notice"></div>
 </div>
 </section>
 
 <section id="dashboard">
 <div class="card">
 <h3>Solde</h3>
-<h2 id="balance">100.00 USD</h2>
+<h2 id="balance">0.00 USDT</h2>
+</div>
+
+<div class="card">
+<h3>Notifications</h3>
+<div id="notifs" class="scroll"></div>
 </div>
 
 <div class="card">
@@ -56,82 +141,102 @@ footer{font-size:12px;text-align:center;padding:10px;color:#aaa}
 
 <section id="trade">
 <div class="card">
-<h3>Signal actif</h3>
-<p id="signal">En attente du prochain signal…</p>
-<button class="btn" onclick="useSignal()">Trader maintenant</button>
-<div id="signalMsg" class="notice"></div>
+<h3>Signal</h3>
+<p id="signal">En attente…</p>
+<button class="btn" onclick="trade()">Trader maintenant</button>
+<div id="tradeMsg" class="notice"></div>
 </div>
 </section>
 
-<section id="history">
+<section id="account">
 <div class="card">
-<h3>Historique de trading</h3>
-<ul id="log"></ul>
+<h3>Mon compte</h3>
+<p>Utilisateur : <span id="accUser"></span></p>
+<p>Code parrain : <span id="myCode"></span></p>
+<input id="newPassAcc" type="password" placeholder="Nouveau mot de passe">
+<button class="btn" onclick="changePass()">Modifier mot de passe</button>
+<div id="accMsg" class="notice"></div>
 </div>
 </section>
 
 <footer>
-Plateforme de démonstration – environnement simulé<br>
-Contact : support@capitainetrading.com | urgence@capitainetrading.com
+support@capitainetrading.com | urgence@capitainetrading.com
 </footer>
 
 <script>
-let balance=100;
+let users={
+ admin:{pass:"admin243",balance:100,code:"ADMIN123",refs:[]}
+};
+let current=null;
 let used=false;
-let logs=[];
 
 function show(id){
-document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
-document.getElementById(id).classList.add('active');
+ document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));
+ document.getElementById(id).classList.add("active");
 }
 
 function login(){
-const u=user.value,p=pass.value;
-if(u==="admin"&&p==="admin243"||u){
-show('dashboard');
-startSignals();
-drawChart();
-}
-}
-
-function logout(){location.reload();}
-
-function startSignals(){
-generateSignal();
-setInterval(generateSignal,900000);
+ let u=user.value,p=pass.value;
+ if(users[u] && users[u].pass===p){
+  current=u;
+  update();
+  show("dashboard");
+  draw();
+ }else alert("Erreur");
 }
 
-function generateSignal(){
-used=false;
-const pairs=["BTC/USDT","ETH/USDT","XRP/USDT"];
-const types=["BUY","SELL"];
-signal.textContent=types[Math.floor(Math.random()*2)]+" "+pairs[Math.floor(Math.random()*3)];
-signalMsg.textContent="Signal valide 15 minutes";
+function createAccount(){
+ let u=newUser.value,p=newPass.value,r=refCode.value;
+ if(users[u]){signupMsg.innerText="Existe déjà";return;}
+ let code=u.toUpperCase()+Math.floor(Math.random()*1000);
+ users[u]={pass:p,balance:50,code:code,refs:[]};
+ signupMsg.innerText="Compte créé. Code parrain : "+code;
+ if(r){
+  for(let k in users){
+   if(users[k].code===r){
+    users[k].balance+=8;
+    users[k].refs.push(u);
+    notify("Parrainage +8 USDT pour "+k);
+   }
+  }
+ }
 }
 
-function useSignal(){
-if(used){signalMsg.textContent="⚠️ Signal déjà utilisé";return;}
-used=true;
-let delta=(Math.random()*10-5);
-balance+=delta;
-balance=Math.max(balance,0);
-balanceEl= document.getElementById("balance");
-balanceEl.textContent=balance.toFixed(2)+" USD";
-logs.push("Trade exécuté : "+delta.toFixed(2)+" USD");
-renderLogs();
-signalMsg.textContent="Trade validé";
+function update(){
+ balance.innerText=users[current].balance.toFixed(2)+" USDT";
+ accUser.innerText=current;
+ myCode.innerText=users[current].code;
 }
 
-function renderLogs(){
-log.innerHTML="";
-logs.forEach(l=>{let li=document.createElement("li");li.textContent=l;log.appendChild(li);});
+function notify(t){
+ let d=document.createElement("div");
+ d.className="notification";
+ d.innerText=t;
+ notifs.prepend(d);
 }
 
-function drawChart(){
-const ctx=document.getElementById('chart');
-new Chart(ctx,{type:'line',data:{labels:[1,2,3,4,5],
-datasets:[{data:[10,12,9,14,11]}]},
-options:{plugins:{legend:{display:false}}}});
+function trade(){
+ if(used){tradeMsg.innerText="Signal déjà utilisé";return;}
+ used=true;
+ let gain=(Math.random()*10-5);
+ users[current].balance+=gain;
+ update();
+ tradeMsg.innerText="Résultat : "+gain.toFixed(2)+" USDT";
+ notify("Trade exécuté");
+}
+
+function changePass(){
+ users[current].pass=newPassAcc.value;
+ accMsg.innerText="Mot de passe modifié";
+ notify("Mot de passe changé");
+}
+
+function draw(){
+ new Chart(chart,{type:"line",
+ data:{labels:[1,2,3,4,5],
+ datasets:[{data:[10,12,9,14,11],borderColor:"#ff9800"}]},
+ options:{responsive:true,plugins:{legend:{display:false}}}
+});
 }
 </script>
 
