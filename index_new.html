@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Capitaine Trading – Simulateur Pro</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body{margin:0;font-family:Arial;background:#0f1f1a;color:#fff;overflow-x:hidden;}
+header{background:#0b3d2e;padding:15px;text-align:center;position:sticky;top:0;z-index:100}
+nav{display:flex;justify-content:space-around;background:#146356;padding:10px;position:sticky;top:60px;z-index:99}
+nav button{background:#ff9800;border:none;padding:8px 12px;color:#000;font-weight:bold;border-radius:6px}
+section{padding:15px;display:none}
+section.active{display:block}
+.card{background:#142e26;padding:15px;border-radius:10px;margin-bottom:10px}
+.btn{background:#ff9800;border:none;padding:10px;width:100%;border-radius:8px;font-weight:bold;margin-top:5px}
+.notice{background:#1f4036;padding:10px;border-radius:6px;margin-top:8px}
+ul{padding-left:0;list-style:none}
+input{width:95%;padding:8px;margin-bottom:10px;border-radius:6px;border:none}
+footer{font-size:12px;text-align:center;padding:10px;color:#aaa;position:relative}
+.scrollable{max-height:300px;overflow-y:auto;}
+.notification{background:#ff9800;color:#000;padding:6px 10px;border-radius:5px;margin:5px 0;font-weight:bold;}
+</style>
+</head>
+
+<body>
+
+<header>
+<h2>Capitaine Trading</h2>
+<p>Plateforme professionnelle de démonstration</p>
+</header>
+
+<nav>
+<button onclick="show('dashboard')">Dashboard</button>
+<button onclick="show('trade')">Trader</button>
+<button onclick="show('history')">Historique</button>
+<button onclick="show('account')">Mon Compte</button>
+<button onclick="logout()">Déconnexion</button>
+</nav>
+
+<section id="login" class="active">
+<div class="card">
+<h3>Connexion</h3>
+<input id="user" placeholder="Identifiant"><br>
+<input id="pass" type="password" placeholder="Mot de passe"><br>
+<button class="btn" onclick="login()">Connexion</button>
+<p>Pas de compte ? <button class="btn" onclick="show('signup')">Créer un compte</button></p>
+</div>
+</section>
+
+<section id="signup">
+<div class="card">
+<h3>Créer un compte utilisateur</h3>
+<input id="newUser" placeholder="Nom d'utilisateur"><br>
+<input id="newPass" type="password" placeholder="Mot de passe"><br>
+<button class="btn" onclick="createAccount()">Valider</button>
+<div id="signupMsg" class="notice"></div>
+</div>
+</section>
+
+<section id="dashboard">
+<div class="card">
+<h3>Solde</h3>
+<h2 id="balance">0.00 USDT</h2>
+<div id="notifList" class="scrollable"></div>
+</div>
+
+<div class="card">
+<canvas id="chart"></canvas>
+</div>
+</section>
+
+<section id="trade">
+<div class="card">
+<h3>Signal actif</h3>
+<p id="signal">En attente du prochain signal…</p>
+<button class="btn" onclick="useSignal()">Trader maintenant</button>
+<div id="signalMsg" class="notice"></div>
+</div>
+</section>
+
+<section id="history">
+<div class="card">
+<h3>Historique de trading</h3>
+<ul id="log" class="scrollable"></ul>
+</div>
+</section>
+
+<section id="account">
+<div class="card">
+<h3>Mon compte</h3>
+<p>Utilisateur : <span id="accName"></span></p>
+<p>Solde : <span id="accBalance">0.00 USDT</span></p>
+<input id="newPassAcc" type="password" placeholder="Modifier mot de passe"><br>
+<button class="btn" onclick="changePassword()">Modifier mot de passe</button>
+<div id="accMsg" class="notice"></div>
+</div>
+</section>
+
+<footer>
+Plateforme de démonstration – environnement simulé<br>
+Contact : support@capitainetrading.com | urgence@capitainetrading.com
+</footer>
+
+<script>
+let users = {"admin": {pass:"admin243", balance:100}};
+let currentUser = null;
+let used=false;
+let logs=[];
+
+// Navigation
+function show(id){
+document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
+document.getElementById(id).classList.add('active');
+if(id==='dashboard') updateDashboard();
+if(id==='account') updateAccount();
+}
+
+// Login
+function login(){
+const u=user.value,p=pass.value;
+if(users[u] && users[u].pass===p){
+currentUser=u;
+show('dashboard');
+startSignals();
+drawChart();
+updateDashboard();
+}else{alert('Identifiant ou mot de passe incorrect');}
+}
+
+// Logout
+function logout(){currentUser=null;location.reload();}
+
+// Create account
+function createAccount(){
+const u=newUser.value,p=newPass.value;
+if(!u||!p){signupMsg.textContent="⚠️ Remplir tous les champs";return;}
+if(users[u]){signupMsg.textContent="⚠️ Utilisateur existant";return;}
+users[u]={pass:p,balance:50};
+signupMsg.textContent="✅ Compte créé avec succès";
+}
+
+// Update dashboard
+function updateDashboard(){
+if(!currentUser) return;
+accName.textContent=currentUser;
+accBalance.textContent=users[currentUser].balance.toFixed(2)+" USDT";
+balance.textContent=users[currentUser].balance.toFixed(2)+" USDT";
+}
+
+// Change password
+function changePassword(){
+if(!currentUser) return;
+const newP=newPassAcc.value;
+if(!newP){accMsg.textContent="⚠️ Entrez un mot de passe";return;}
+users[currentUser].pass=newP;
+accMsg.textContent="✅ Mot de passe modifié";
+}
+
+// Signals
+function startSignals(){
+generateSignal();
+setInterval(generateSignal,3600000); // 1h pour test, plus tard 8h,13h,16h,18h
+}
+
+function generateSignal(){
+used=false;
+const pairs=["BTC/USDT","ETH/USDT","XRP/USDT"];
+const types=["BUY","SELL"];
+signal.textContent=types[Math.floor(Math.random()*2)]+" "+pairs[Math.floor(Math.random()*3)];
+signalMsg.textContent="Signal valide 15 minutes";
+}
+
+// Use signal
+function useSignal(){
+if(used){signalMsg.textContent="⚠️ Signal déjà utilisé";return;}
+used=true;
+let delta=(Math.random()*10-5);
+users[currentUser].balance+=delta;
+updateDashboard();
+logs.push(currentUser+" Trade : "+delta.toFixed(2)+" USDT");
+renderLogs();
+signalMsg.textContent="✅ Trade validé";
+addNotification(currentUser+" a utilisé un signal");
+}
+
+// Render logs
+function renderLogs(){
+log.innerHTML="";
+logs.forEach(l=>{let li=document.createElement("li");li.textContent=l;log.appendChild(li);});
+}
+
+// Notifications
+function addNotification(msg){
+const n=document.createElement("div");
+n.className="notification";
+n.textContent=msg;
+notifList.prepend(n);
+}
+
+// Chart
+function drawChart(){
+const ctx=document.getElementById('chart');
+new Chart(ctx,{type:'line',data:{labels:[1,2,3,4,5],datasets:[{label:'Performance',data:[10,12,9,14,11],borderColor:'#ff9800',backgroundColor:'rgba(255,152,0,0.3)'}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}});
+}
+</script>
+
+</body>
+</html>
