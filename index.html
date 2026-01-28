@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Capitaine Trading – Simulateur</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body{margin:0;font-family:Arial;background:#0f1f1a;color:#fff}
+header{background:#0b3d2e;padding:15px;text-align:center}
+nav{display:flex;justify-content:space-around;background:#146356;padding:10px}
+nav button{background:#ff9800;border:none;padding:8px 12px;color:#000;font-weight:bold;border-radius:6px}
+section{padding:15px;display:none}
+section.active{display:block}
+.card{background:#142e26;padding:15px;border-radius:10px;margin-bottom:10px}
+.btn{background:#ff9800;border:none;padding:10px;width:100%;border-radius:8px;font-weight:bold}
+.notice{background:#1f4036;padding:10px;border-radius:6px;margin-top:8px}
+footer{font-size:12px;text-align:center;padding:10px;color:#aaa}
+</style>
+</head>
+
+<body>
+
+<header>
+<h2>Capitaine Trading</h2>
+<p>Plateforme professionnelle de démonstration</p>
+</header>
+
+<nav>
+<button onclick="show('dashboard')">Dashboard</button>
+<button onclick="show('trade')">Trader</button>
+<button onclick="show('history')">Historique</button>
+<button onclick="logout()">Déconnexion</button>
+</nav>
+
+<section id="login" class="active">
+<div class="card">
+<h3>Connexion</h3>
+<input id="user" placeholder="Identifiant"><br><br>
+<input id="pass" type="password" placeholder="Mot de passe"><br><br>
+<button class="btn" onclick="login()">Connexion</button>
+</div>
+</section>
+
+<section id="dashboard">
+<div class="card">
+<h3>Solde</h3>
+<h2 id="balance">100.00 USD</h2>
+</div>
+
+<div class="card">
+<canvas id="chart"></canvas>
+</div>
+</section>
+
+<section id="trade">
+<div class="card">
+<h3>Signal actif</h3>
+<p id="signal">En attente du prochain signal…</p>
+<button class="btn" onclick="useSignal()">Trader maintenant</button>
+<div id="signalMsg" class="notice"></div>
+</div>
+</section>
+
+<section id="history">
+<div class="card">
+<h3>Historique de trading</h3>
+<ul id="log"></ul>
+</div>
+</section>
+
+<footer>
+Plateforme de démonstration – environnement simulé<br>
+Contact : support@capitainetrading.com | urgence@capitainetrading.com
+</footer>
+
+<script>
+let balance=100;
+let used=false;
+let logs=[];
+
+function show(id){
+document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
+document.getElementById(id).classList.add('active');
+}
+
+function login(){
+const u=user.value,p=pass.value;
+if(u==="admin"&&p==="admin243"||u){
+show('dashboard');
+startSignals();
+drawChart();
+}
+}
+
+function logout(){location.reload();}
+
+function startSignals(){
+generateSignal();
+setInterval(generateSignal,900000);
+}
+
+function generateSignal(){
+used=false;
+const pairs=["BTC/USDT","ETH/USDT","XRP/USDT"];
+const types=["BUY","SELL"];
+signal.textContent=types[Math.floor(Math.random()*2)]+" "+pairs[Math.floor(Math.random()*3)];
+signalMsg.textContent="Signal valide 15 minutes";
+}
+
+function useSignal(){
+if(used){signalMsg.textContent="⚠️ Signal déjà utilisé";return;}
+used=true;
+let delta=(Math.random()*10-5);
+balance+=delta;
+balance=Math.max(balance,0);
+balanceEl= document.getElementById("balance");
+balanceEl.textContent=balance.toFixed(2)+" USD";
+logs.push("Trade exécuté : "+delta.toFixed(2)+" USD");
+renderLogs();
+signalMsg.textContent="Trade validé";
+}
+
+function renderLogs(){
+log.innerHTML="";
+logs.forEach(l=>{let li=document.createElement("li");li.textContent=l;log.appendChild(li);});
+}
+
+function drawChart(){
+const ctx=document.getElementById('chart');
+new Chart(ctx,{type:'line',data:{labels:[1,2,3,4,5],
+datasets:[{data:[10,12,9,14,11]}]},
+options:{plugins:{legend:{display:false}}}});
+}
+</script>
+
+</body>
+</html>
