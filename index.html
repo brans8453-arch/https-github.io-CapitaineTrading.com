@@ -136,13 +136,25 @@ function signup(){
 }
 
 function login(){
- let u = user.value, p = pass.value;
- if(users[u] && users[u].pass === p){
-   current = u;
-   update();  // <-- on met à jour le dashboard dès la connexion
-   show("dashboard");
-   draw();
- } else alert("Erreur : identifiant ou mot de passe incorrect");
+ function login(){
+  let u = user.value;      // récupère le nom d'utilisateur
+  let p = pass.value;      // récupère le mot de passe
+
+  if(users[u] && users[u].pass === p){
+    current = u;           // définit l'utilisateur courant
+    update();              // met à jour le solde, le code parrain, etc.
+
+    // ⚡ Si c'est l'administrateur, afficher Admin
+    if(current === "admin"){
+      show("admin");       // affiche la section Admin
+    } else {
+      show("dashboard");   // sinon affiche le dashboard utilisateur
+    }
+
+    draw(); // met à jour le graphique
+  } else {
+    alert("Erreur : utilisateur ou mot de passe incorrect");
+  }
 }
 
 function getSignal(){
