@@ -1,78 +1,180 @@
-<div class="card">
-  <h3>Gestion des signaux</h3>
-  <p>4 signaux toutes les 4 heures</p>
-  <button class="btn" onclick="adminSignal()">Générer signal</button>
-  <div id="adminSignalMsg" class="notice"></div>
-</div>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Site Trading Professionnel – Dashboard</title>
+<style>
+body{font-family:Arial;background:#eef2f5;margin:0;padding:0}
+.hidden{display:none}
+header{background:#146356;color:#fff;padding:15px;text-align:center}
+section{padding:20px;}
+button{padding:10px;margin:5px;cursor:pointer;background:#146356;color:#fff;border:none;border-radius:5px}
+.card{background:#fff;padding:15px;margin:15px;border-radius:10px;box-shadow:0 0 5px rgba(0,0,0,0.1)}
+.notice{margin-top:10px;color:green}
+input{padding:8px;margin:5px;width:calc(100% - 20px);}
+</style>
+</head>
+<body>
+
+<header>
+<h1>Trading Dashboard</h1>
+</header>
+
+<!-- LOGIN -->
+<section id="login">
+  <h2>Connexion</h2>
+  <input type="text" id="user" placeholder="Nom d'utilisateur"><br>
+  <input type="password" id="pass" placeholder="Mot de passe"><br>
+  <button onclick="login()">Se connecter</button>
+  <button onclick="signup()">S'inscrire</button>
+</section>
+
+<!-- DASHBOARD UTILISATEUR -->
+<section id="dashboard" class="hidden">
+  <h2>Dashboard Utilisateur</h2>
+  <p>Utilisateur : <span id="accUser"></span></p>
+  <p>Solde : <span id="balance"></span></p>
+  <canvas id="tradingChart" width="400" height="200"></canvas>
+  <div class="card">
+    <h3>Gestion des signaux</h3>
+    <p id="signalMsg">4 signaux toutes les 4 heures</p>
+    <button onclick="getSignal()">Générer signal</button>
+  </div>
+  <button id="btnAdmin" onclick="showAdmin()" style="display:none">Accès Admin</button>
+</section>
+
+<!-- DASHBOARD ADMIN -->
+<section id="admin" class="hidden">
+  <h2>Dashboard Admin</h2>
+  <div class="card">
+    <h3>Envoyer Solde</h3>
+    <input type="text" id="adminUID" placeholder="Utilisateur">
+    <input type="number" id="adminAmount" placeholder="Montant">
+    <button onclick="sendBalance()">Envoyer</button>
+    <p id="adminMsg"></p>
+  </div>
+  <div class="card">
+    <h3>Gestion des signaux</h3>
+    <p>4 signaux toutes les 4 heures</p>
+    <button onclick="adminSignal()">Générer signal</button>
+    <div id="adminSignalMsg" class="notice"></div>
+  </div>
 </section>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+// --- Données utilisateurs ---
+const users = {
+  admin: {pass:"1234", balance:0, code:"ADM001"},
+  user1: {pass:"abcd", balance:50, code:"USR001"}
+};
+let current = null;
 let lastSignal = 0;
 
-function show(id){
-  document.querySelectorAll("section").forEach(s=>s.classList.add("hidden"));
-  document.getElementById(id).classList.remove("hidden");
-}
-
-function signup(){
-  alert("Compte créé (démo)");
-  show("login");
-}
-
+// --- LOGIN corrigé ---
 function login(){
- function login(){
-  let u = user.value;      // récupère le nom d'utilisateur
-  let p = pass.value;      // récupère le mot de passe
+  const u = document.getElementById("user").value;
+  const p = document.getElementById("pass").value;
 
   if(users[u] && users[u].pass === p){
-    current = u;           // définit l'utilisateur courant
-    update();              // met à jour le solde, le code parrain, etc.
+    current = u;
+    update();
 
-    // ⚡ Si c'est l'administrateur, afficher Admin
     if(current === "admin"){
-      show("admin");       // affiche la section Admin
+      show("admin");
     } else {
-      show("dashboard");   // sinon affiche le dashboard utilisateur
+      show("dashboard");
     }
 
-    draw(); // met à jour le graphique
+    if(typeof draw === "function") draw(); // si tu as un graphique
   } else {
     alert("Erreur : utilisateur ou mot de passe incorrect");
   }
 }
 
-function getSignal(){
-  const now=Date.now();
-  if(now-lastSignal<4*60*60*1000){
-    document.getElementById("signalMsg").innerText="⏳ Signal indisponible – prochain dans 4h";
-  }else{
-    lastSignal=now;
-    document.getElementById("signalMsg").innerText="📈 Signal généré – marché simulé";
+// --- INSCRIPTION simple ---
+function signup(){
+  const u = prompt("Entrez votre nom d'utilisateur:");
+  const p = prompt("Entrez un mot de passe:");
+  if(!u || !p){
+    alert("Nom d'utilisateur ou mot de passe invalide");
+    return;
   }
+  if(users[u]){
+    alert("Utilisateur déjà existant");
+    return;
+  }
+  users[u] = {pass:p, balance:0, code:"USR"+(Object.keys(users).length+1).toString().padStart(3,'0')};
+  alert("Compte créé avec succès !");
+  show("login");
 }
-// --- MISE À JOUR DU DASHBOARD ---
+
+// --- AFFICHAGE ---
+function show(id){
+  document.querySelectorAll("section").forEach(s=>s.classList.add("hidden"));
+  document.getElementById(id).classList.remove("hidden");
+}
+
+// --- UPDATE DASHBOARD ---
 function update(){
   if(!current) return;
+  document.getElementById("balance").innerText = users[current].balance.toFixed(2) + " USDT";
+  document.getElementById("accUser").innerText = current;
+  document.getElementById("btnAdmin").style.display = current === "admin" ? "inline-block" : "none";
+}
 
-  // Met à jour le solde
-  balance.innerText = users[current].balance.toFixed(2) + " USDT";
+// --- SIGNAL UTILISATEUR ---
+function getSignal(){
+  const now = Date.now();
+  const msg = document.getElementById("signalMsg");
+  if(now-lastSignal<4*60*60*1000){
+    msg.innerText="⏳ Signal indisponible – prochain dans 4h";
+  } else {
+    lastSignal=now;
+    msg.innerText="📈 Signal généré – marché simulé";
+  }
+}
 
-  // Met à jour les infos compte
-  accUser.innerText = current;
-  myCode.innerText = users[current].code;
-
-  // Afficher bouton Admin uniquement si c'est admin
+// --- ADMIN ---
+function showAdmin(){
   if(current === "admin"){ 
-      document.getElementById("btnAdmin").style.display = "inline-block"; 
+    show("admin"); 
   } else { 
-      document.getElementById("btnAdmin").style.display = "none"; 
+    alert("Accès interdit : réservé à l’administrateur"); 
   }
+}
+
+// --- ENVOI SOLDE ---
+function sendBalance(){
+  const uid = document.getElementById("adminUID").value;
+  const amount = parseFloat(document.getElementById("adminAmount").value);
+  const adminMsg = document.getElementById("adminMsg");
+
+  if(!users[uid]){
+    adminMsg.innerText="Utilisateur introuvable"; 
+    return;
   }
+  if(isNaN(amount) || amount <= 0){
+    adminMsg.innerText="Montant invalide"; 
+    return;
+  }
+
+  users[uid].balance += amount;
+  adminMsg.innerText=`✅ ${amount.toFixed(2)} USDT envoyé à ${uid}`;
+  update();
+}
+
+// --- SIGNAL ADMIN ---
+function adminSignal(){
+  const gain = (Math.random()*10-5);
+  document.getElementById("adminSignalMsg").innerText=`Signal généré: ${gain.toFixed(2)} USDT`;
+  lastSignal = Date.now();
+}
+
 // --- GRAPH TRADINGVIEW SIMULÉ ---
 const ctx = document.getElementById('tradingChart').getContext('2d');
 new Chart(ctx, {
-    type: 'line', // visuel pro
+    type: 'line',
     data: {
         labels: ['09h','10h','11h','12h','13h','14h','15h'],
         datasets: [{
@@ -92,48 +194,7 @@ new Chart(ctx, {
         }
     }
 });
-// --- ADMIN ---
-function showAdmin(){
- if(current === "admin"){ 
-    show("admin"); 
- } else { 
-    alert("Accès interdit : réservé à l’administrateur"); 
- }
-}
-
-// --- ENVOI SOLDE ---
-function sendBalance(){
- const uid = adminUID.value;
- const amount = parseFloat(adminAmount.value);
-
- if(!users[uid]){
-   adminMsg.innerText="Utilisateur introuvable"; 
-   return;
- }
-
- if(isNaN(amount) || amount <= 0){
-   adminMsg.innerText="Montant invalide"; 
-   return;
- }
-
- if(!confirm(`Confirmer l’envoi de ${amount.toFixed(2)} USDT à ${uid} ?`)){
-   adminMsg.innerText="Envoi annulé"; 
-   return;
- }
-
- users[uid].balance += amount;
- adminMsg.innerText=`✅ ${amount.toFixed(2)} USDT envoyé à ${uid}`;
- notify(`Admin a crédité ${amount.toFixed(2)} USDT à ${uid}`);
- update(); // Met à jour le dashboard
-}
-
-// --- ADMIN SIGNAL ---
-function adminSignal(){
- const gain = (Math.random()*10-5);
- notify(`Signal Admin généré: ${gain.toFixed(2)} USDT`);
- adminSignalMsg.innerText=`Signal généré: ${gain.toFixed(2)} USDT`;
- lastSignal = Date.now(); // reset le signal pour tout le monde
-      }</script>
+</script>
 
 </body>
 </html>
