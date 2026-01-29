@@ -99,7 +99,26 @@ h2,h3{margin-top:0}
   <div class="card">
     <h3>Gestion des signaux</h3>
     <p>4 signaux toutes les 4 heures</p>
-  </div>
+  </div><div class="card">
+  <h3>Dashboard Administrateur</h3>
+
+  <label>UID Utilisateur :</label>
+  <input id="adminUID" placeholder="Nom utilisateur à créditer">
+
+  <label>Montant USDT :</label>
+  <input id="adminAmount" type="number" placeholder="Montant à envoyer">
+
+  <button class="btn" onclick="sendBalance()">Valider envoi (Double confirmation)</button>
+
+  <div id="adminMsg" class="notice" style="margin-top:10px"></div>
+</div>
+
+<div class="card">
+  <h3>Gestion des signaux</h3>
+  <p>4 signaux toutes les 4 heures</p>
+  <button class="btn" onclick="adminSignal()">Générer signal</button>
+  <div id="adminSignalMsg" class="notice"></div>
+</div>
 </section>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -176,7 +195,48 @@ new Chart(ctx, {
         }
     }
 });
-</script>
+// --- ADMIN ---
+function showAdmin(){
+ if(current === "admin"){ 
+    show("admin"); 
+ } else { 
+    alert("Accès interdit : réservé à l’administrateur"); 
+ }
+}
+
+// --- ENVOI SOLDE ---
+function sendBalance(){
+ const uid = adminUID.value;
+ const amount = parseFloat(adminAmount.value);
+
+ if(!users[uid]){
+   adminMsg.innerText="Utilisateur introuvable"; 
+   return;
+ }
+
+ if(isNaN(amount) || amount <= 0){
+   adminMsg.innerText="Montant invalide"; 
+   return;
+ }
+
+ if(!confirm(`Confirmer l’envoi de ${amount.toFixed(2)} USDT à ${uid} ?`)){
+   adminMsg.innerText="Envoi annulé"; 
+   return;
+ }
+
+ users[uid].balance += amount;
+ adminMsg.innerText=`✅ ${amount.toFixed(2)} USDT envoyé à ${uid}`;
+ notify(`Admin a crédité ${amount.toFixed(2)} USDT à ${uid}`);
+ update(); // Met à jour le dashboard
+}
+
+// --- ADMIN SIGNAL ---
+function adminSignal(){
+ const gain = (Math.random()*10-5);
+ notify(`Signal Admin généré: ${gain.toFixed(2)} USDT`);
+ adminSignalMsg.innerText=`Signal généré: ${gain.toFixed(2)} USDT`;
+ lastSignal = Date.now(); // reset le signal pour tout le monde
+      }</script>
 
 </body>
 </html>
