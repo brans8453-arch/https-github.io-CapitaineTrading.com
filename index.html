@@ -20,26 +20,20 @@ function signup(){
   show("login");
 }
 
-function login(){
- function login(){
-  let u = user.value;      // récupère le nom d'utilisateur
-  let p = pass.value;      // récupère le mot de passe
-
-  if(users[u] && users[u].pass === p){
-    current = u;           // définit l'utilisateur courant
-    update();              // met à jour le solde, le code parrain, etc.
-
-    // ⚡ Si c'est l'administrateur, afficher Admin
-    if(current === "admin"){
-      show("admin");       // affiche la section Admin
-    } else {
-      show("dashboard");   // sinon affiche le dashboard utilisateur
-    }
-
-    draw(); // met à jour le graphique
-  } else {
-    alert("Erreur : utilisateur ou mot de passe incorrect");
+function signup(){
+  const u = prompt("Entrez votre nom d'utilisateur:");
+  const p = prompt("Entrez un mot de passe:");
+  if(!u || !p){
+    alert("Nom d'utilisateur ou mot de passe invalide");
+    return;
   }
+  if(users[u]){
+    alert("Utilisateur déjà existant");
+    return;
+  }
+  users[u] = {pass:p, balance:0, code:"USR"+(Object.keys(users).length+1).toString().padStart(3,'0')};
+  alert("Compte créé avec succès !");
+  show("login"); // redirige vers le login
 }
 
 function getSignal(){
